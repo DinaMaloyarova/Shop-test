@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Подробнее о продукте</title>
+</head>
+<body>
+<div id="content">
+
+</div>
+<script>
+
+    let content_block = document.getElementById('content');
+    let full_url = document.location.pathname;
+    let url_array = full_url.split('/');
+    let product_id = url_array[url_array.length-2];
+    const url = 'http://127.0.0.1:8000/api/products/' + product_id + '/';
+
+    function get_product_detail(){
+        let headers = {
+              'Content-Type': 'application/json',
+          }
+         let options = {
+          method: 'GET',
+          headers: headers
+        };
+        fetch(url, options)
+            .then(response => response.json())
+            .then(result => {
+                let product_div = document.createElement('div');
+                product_div.id = result.id;
+                product_div.style = "margin-bottom: 10px";
+                let product_name = document.createElement('h3');
+                product_name.innerText = result.name;
+                let product_description = document.createElement('p');
+                product_description.innerText = result.description;
+                let product_price = document.createElement('h5');
+                product_price.innerText = result.price;
+                product_div.appendChild(product_name);
+                product_div.appendChild(product_description);
+                product_div.appendChild(product_price);
+                content_block.appendChild(product_div);
+            })
+    }
+    get_product_detail();
+
+
+</script>
+    </body>
+</html>

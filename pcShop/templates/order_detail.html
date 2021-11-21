@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказ</title>
+</head>
+<body>
+<h1>заказ</h1>
+<div id="content">
+
+</div>
+<script>
+    const url = 'http://127.0.0.1:8000/api/order/';
+    let content_block = document.getElementById('content');
+
+    function get_order_detail(){
+        let headers = {
+              'Content-Type': 'application/json',
+          }
+         let options = {
+          method: 'GET',
+          headers: headers
+        };
+        fetch(url, options)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                let customer_info = document.createElement('h2');
+                customer_info.innerText = result.customer.username;
+                content_block.appendChild(customer_info);
+
+                for (let i in result.product){
+                        let product_div = document.createElement('div');
+                        product_div.id = result.product[i].id;
+                        product_div.style = "margin-bottom: 10px";
+                        let product_name = document.createElement('a');
+                        product_name.innerText = result.product[i].name;
+                        product_name.href = "http://127.0.0.1:8000/products/" + result.product[i].id + "/";
+                        let product_price = document.createElement('h5');
+                        product_price.innerText = result.product[i].price;
+                        product_div.appendChild(product_name);
+                        product_div.appendChild(product_price);
+                        content_block.appendChild(product_div);
+                    }
+            })
+    }
+    get_order_detail();
+</script>
+</body>
+</html>

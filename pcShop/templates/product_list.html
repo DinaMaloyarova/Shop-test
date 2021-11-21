@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список продуктов</title>
+</head>
+<body>
+<div id="product-create">
+Название продукта<input id="name" type="text">
+Цена <input id="price" type="number">
+<button id="add_product"> Добавить продукт</button>
+</div>
+<div id="content">
+</div>
+<div>
+    <button id="get_data">Load data</button>
+</div>
+ <script>
+     function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        let get_data = document.getElementById('get_data');
+        let content_block = document.getElementById('content');
+
+        get_data.addEventListener('click', function (){
+            const url = 'http://127.0.0.1:8000/api/products/';
+            let headers = {
+                'Content-Type': 'application/json',
+            }
+            let options = {
+                method: 'GET',
+                headers: headers
+            };
+            fetch(url, options)
+                .then(response => response.json())
+                .then(result => {
+                    for (let i in result){
+                        let product_div = document.createElement('div');
+                        product_div.id = result[i].id;
+                        product_div.style = "margin-bottom: 10px";
+                        let product_name = document.createElement('a');
+                        product_name.innerText = result[i].name;
+                        product_name.href = "http://127.0.0.1:8000/products/" + result[i].id + "/";
+                        let product_price = document.createElement('h5');
+                        let order_product = document.createElement('button');
+                        order_product.innerText = 'Добавить в корзину'
+                        order_product.addEventListener('click', function (){
+                            const add_order_product_url = 'http://127.0.0.1:8000/api/add-product/' + result[i].id + "/";
+                            let headers = {
+                                'Content-Type': 'application/json',
+                            }
+                            let options = {
+                                method: 'GET',
+                                headers: headers
+                            };
+                            fetch(add_order_product_url, options).then(
+                                response => {
+                                    if (response.ok){
+                                        alert(result[i].name + ' успешно добавлен в корзину');
+                                    }
+                                }
+                            );
+                        })
+                        product_price.innerText = result[i].price;
+                        product_div.appendChild(product_name);
+                        product_div.appendChild(product_price);
+                        product_div.appendChild(order_product);
+                        content_block.appendChild(product_div);
+                    }
+                })
+        })
+
+        let add_product = document.getElementById('add_product');
+        add_product.addEventListener('click', function (){
+            let name = document.getElementById('name').value;
+            let price = document.getElementById('price').value;
+            const url = 'http://127.0.0.1:8000/api/products/';
+            let headers = {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+            let body = {
+                'name': name,
+                'price': price
+            }
+            let options = {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            };
+            fetch(url, options).then(
+                response =>{
+                    if (response.ok){
+                        alert('Продукт добавлен удачно');
+                    }
+                    else{
+                        response.text().then(function (text) {
+                          alert('Продукт не добавлен. Произошла ошибка:' + text);
+                        });
+                    }
+                }
+        )
+        })
+ </script>
+    </body>
+</html>
