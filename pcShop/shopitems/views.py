@@ -1,4 +1,3 @@
-from django.contrib.auth import logout, login
 from django.shortcuts import render, get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -6,21 +5,9 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
+
 from .models import Product, Order
-from .serializers import ProductSerializer, OrderSerializer
-
-
-class ProductViewSet(ModelViewSet):
-    permission_classes = (AllowAny, )
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-
-class OrderViewSet(ModelViewSet):
-    permission_classes = (AllowAny,)
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+from .serializers import ProductSerializer, ProductDetailSerializer, OrderSerializer
 
 
 class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
@@ -31,11 +18,18 @@ class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
     def get(self, request):
         return super().list(request)
 
-    # после return функция отдает свое значение, все что написано после return не сработает
-    # принт надо ставить до return
     def post(self, request):
-        print(request.data)
         return super().create(request)
+
+
+class ProductDetailView(GenericAPIView, RetrieveModelMixin):
+    queryset = Product.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = ProductDetailSerializer
+
+    def get(self, request, pk):
+        return super().retrieve(request, pk)
+
 
 class OrderView(APIView):
     permission_classes = (AllowAny, )

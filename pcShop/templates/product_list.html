@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Список продуктов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>List of products</title>
 </head>
 <body>
-<div id="product-create">
-Название продукта<input id="name" type="text">
-Цена <input id="price" type="number">
-<button id="add_product"> Добавить продукт</button>
-</div>
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="homepage">Books for Geeks</a>
+        <button id="get_data">Load data</button>
+      </div>
+    </nav>
+
 <div id="content">
-</div>
-<div>
-    <button id="get_data">Load data</button>
 </div>
  <script>
      function getCookie(name) {
@@ -57,7 +57,7 @@
                         product_name.href = "http://127.0.0.1:8000/products/" + result[i].id + "/";
                         let product_price = document.createElement('h5');
                         let order_product = document.createElement('button');
-                        order_product.innerText = 'Добавить в корзину'
+                        order_product.innerText = 'Add to card'
                         order_product.addEventListener('click', function (){
                             const add_order_product_url = 'http://127.0.0.1:8000/api/add-product/' + result[i].id + "/";
                             let headers = {
