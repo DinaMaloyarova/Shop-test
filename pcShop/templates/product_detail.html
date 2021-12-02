@@ -8,15 +8,13 @@
 <body>
     <nav class="navbar navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Books for Geeks</a>
+        <a class="navbar-brand" href="http://127.0.0.1:8000/">Books for Geeks</a>
         <p>More about book</p>
       </div>
     </nav>
-
     <div id="content">
     </div>
 <script>
-
     let content_block = document.getElementById('content');
     let full_url = document.location.pathname;
     let url_array = full_url.split('/');
@@ -39,11 +37,15 @@
                 product_div.style = "margin-bottom: 10px";
                 let product_name = document.createElement('h3');
                 product_name.innerText = result.name;
+<!--                let book_img = document.createElement('img');-->
+<!--                book_img.src = result[i].image;-->
+<!--                book_img.style = "height:100px";-->
                 let product_description = document.createElement('p');
                 product_description.innerText = result.description;
                 let product_price = document.createElement('h5');
                 product_price.innerText = result.price;
                 product_div.appendChild(product_name);
+<!--                product_div.appendChild(book_img);-->
                 product_div.appendChild(product_description);
                 product_div.appendChild(product_price);
                 content_block.appendChild(product_div);

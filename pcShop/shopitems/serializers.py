@@ -7,7 +7,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            'id', 'name', 'price',
+            'id', 'name', 'price', 'photo'
         )
 
     def validate(self, attrs):
@@ -20,7 +20,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            'id', 'name', 'price', 'description',
+            'id', 'name', 'photo',  'price', 'description',
         )
 
 
@@ -37,5 +37,10 @@ class OrderSerializer(serializers.Serializer):
 
     class Meta:
         fields = (
-            'id', 'product', 'customer',
+            'id', 'product', 'customer', 'photo'
         )
+
+
+class EmailSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    message = serializers.CharField()

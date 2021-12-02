@@ -8,7 +8,7 @@
 <body>
     <nav class="navbar navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="homepage">Books for Geeks</a>
+        <a class="navbar-brand" href="http://127.0.0.1:8000/">Books for Geeks</a>
         <button id="get_data">Load data</button>
       </div>
     </nav>
@@ -55,6 +55,9 @@
                         let product_name = document.createElement('a');
                         product_name.innerText = result[i].name;
                         product_name.href = "http://127.0.0.1:8000/products/" + result[i].id + "/";
+                        let book_img = document.createElement('img');
+                        book_img.src = result[i].photo;
+                        book_img.style = "height:100px";
                         let product_price = document.createElement('h5');
                         let order_product = document.createElement('button');
                         order_product.innerText = 'Add to card'
@@ -70,13 +73,14 @@
                             fetch(add_order_product_url, options).then(
                                 response => {
                                     if (response.ok){
-                                        alert(result[i].name + ' успешно добавлен в корзину');
+                                        alert(result[i].name + ' added to cart');
                                     }
                                 }
                             );
                         })
                         product_price.innerText = result[i].price;
                         product_div.appendChild(product_name);
+                        product_div.appendChild(book_img);
                         product_div.appendChild(product_price);
                         product_div.appendChild(order_product);
                         content_block.appendChild(product_div);

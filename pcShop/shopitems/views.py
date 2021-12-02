@@ -5,9 +5,10 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .tasks import send_email
 
 from .models import Product, Order
-from .serializers import ProductSerializer, ProductDetailSerializer, OrderSerializer
+from .serializers import ProductSerializer, ProductDetailSerializer, OrderSerializer,EmailSerializer
 
 
 class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
@@ -48,6 +49,17 @@ class AddProductApiView(APIView):
         order, created = Order.objects.get_or_create(customer=request.user, is_active=True)
         order.product.add(product)
         return Response(status=status.HTTP_200_OK)
+
+
+class SendEmailApiView(GenericAPIView):
+    permission_classes = (AllowAny, )
+    serializer_class = EmailSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        send_email.delay(**serializer.validated_data)
+        return Response(200)
 
 
 def homepage(request):
