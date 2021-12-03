@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'shopitems',
     'rest_framework',
+    'rest_framework_simplejwt',
     'drf_yasg',
 ]
 
@@ -42,6 +43,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'pcShop.urls'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 #CELERY
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'

@@ -1,19 +1,33 @@
+from django.contrib.auth import logout, login
 from django.shortcuts import render, get_object_or_404
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .tasks import send_email
-
+from rest_framework.viewsets import ModelViewSet
 from .models import Product, Order
-from .serializers import ProductSerializer, ProductDetailSerializer, OrderSerializer,EmailSerializer
+from .serializers import ProductSerializer, OrderSerializer, EmailSerializer
+from .permissions import CustomerPermission, OrderCustomerPermission
+from rest_framework.permissions import AllowAny
+
+
+class ProductViewSet(ModelViewSet):
+    permission_classes = (CustomerPermission, )
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class OrderViewSet(ModelViewSet):
+    permission_classes = (OrderCustomerPermission,)
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
 
 
 class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
     queryset = Product.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = ProductSerializer
 
     def get(self, request):
@@ -23,17 +37,8 @@ class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
         return super().create(request)
 
 
-class ProductDetailView(GenericAPIView, RetrieveModelMixin):
-    queryset = Product.objects.all()
-    permission_classes = (AllowAny,)
-    serializer_class = ProductDetailSerializer
-
-    def get(self, request, pk):
-        return super().retrieve(request, pk)
-
-
 class OrderView(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request):
         order = get_object_or_404(Order, customer=request.user)
@@ -42,24 +47,13 @@ class OrderView(APIView):
 
 
 class AddProductApiView(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request, pk):
         product = get_object_or_404(Product, id=pk)
         order, created = Order.objects.get_or_create(customer=request.user, is_active=True)
         order.product.add(product)
         return Response(status=status.HTTP_200_OK)
-
-
-class SendEmailApiView(GenericAPIView):
-    permission_classes = (AllowAny, )
-    serializer_class = EmailSerializer
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        send_email.delay(**serializer.validated_data)
-        return Response(200)
 
 
 def homepage(request):
@@ -76,3 +70,15 @@ def product_detail(request, pk):
 
 def order_detail(request):
     return render(request, 'order_detail.html')
+
+
+class SendEmailApiView(GenericAPIView):
+    permission_classes = (AllowAny, )
+    serializer_class = EmailSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        send_email.delay(**serializer.validated_data)
+        return Response(200)
+

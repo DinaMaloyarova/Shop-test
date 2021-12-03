@@ -1,8 +1,10 @@
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from .views import (
+    ProductViewSet,
+    OrderViewSet,
     ProductView,
-    ProductDetailView,
     OrderView,
     AddProductApiView,
     homepage,
@@ -10,6 +12,11 @@ from .views import (
     order_detail,
     product_detail,
 )
+
+router = DefaultRouter()
+router.register('products', ProductViewSet)
+router.register('orders', OrderViewSet)
+urlpatterns = router.urls
 
 html_urlpatterns = [
     path('', homepage),
@@ -19,13 +26,10 @@ html_urlpatterns = [
 ]
 
 backend_urlpatterns = [
-    path('products/', ProductView.as_view()),
-    path('products/<int:pk>/', ProductDetailView.as_view()),
     path('add-product/<int:pk>/', AddProductApiView.as_view()),
-    path('order/', OrderView.as_view()),
 ]
 
 urlpatterns = [
     path('', include(html_urlpatterns)),
-    path('api/', include(backend_urlpatterns)),
+    path('api/', include(urlpatterns)),
 ]

@@ -16,38 +16,87 @@
 <div id="content">
 </div>
  <script>
-     function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+     let login = document.getElementById('login');
+        login.addEventListener('click', function(){
+            const login_url = "http://127.0.0.1:8000/login/";
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+
+            let headers = {
+                'Content-Type': 'application/json',
             }
-            return cookieValue;
+            let body = {
+                'username': username,
+                'password': password
+            }
+            let options = {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            };
+            fetch(login_url, options).then(response => {
+                console.log(response.status);
+                return response.json()
+            }).then(data => {
+                localStorage.setItem('access', data.access);
+                localStorage.setItem('refresh', data.refresh);
+            })
+        })
+
+        function refresh_token(){
+            const refresh_url = "http://127.0.0.1:8000/refresh/";
+            let refresh_token = localStorage.getItem('refresh');
+             let headers = {
+                'Content-Type': 'application/json',
+            }
+            let body = {
+                'refresh': refresh_token
+            }
+            let options = {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            };
+            fetch(refresh_url, options).then(response => {
+                console.log(response.status);
+                return response.json()
+            }).then(data => {
+                localStorage.setItem('access', data.access);
+            })
         }
-        const csrftoken = getCookie('csrftoken');
 
         let get_data = document.getElementById('get_data');
         let content_block = document.getElementById('content');
 
         get_data.addEventListener('click', function (){
             const url = 'http://127.0.0.1:8000/api/products/';
+            let access = localStorage.getItem('access');
             let headers = {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + access
             }
             let options = {
                 method: 'GET',
                 headers: headers
             };
             fetch(url, options)
-                .then(response => response.json())
+                .then(response => {
+                if (response.ok){
+                    result = response.json();
+                    return result;
+                }
+                else{
+                    refresh_token();
+                    access = localStorage.getItem('access');
+                    fetch(url, options)
+                    .then(response => {
+                            result = response.json();
+                            return result;
+                        })
+                }
+                })
                 .then(result => {
+                    console.log(result);
                     for (let i in result){
                         let product_div = document.createElement('div');
                         product_div.id = result[i].id;
@@ -55,12 +104,9 @@
                         let product_name = document.createElement('a');
                         product_name.innerText = result[i].name;
                         product_name.href = "http://127.0.0.1:8000/products/" + result[i].id + "/";
-                        let book_img = document.createElement('img');
-                        book_img.src = result[i].photo;
-                        book_img.style = "height:100px";
                         let product_price = document.createElement('h5');
                         let order_product = document.createElement('button');
-                        order_product.innerText = 'Add to card'
+                        order_product.innerText = 'Добавить в корзину'
                         order_product.addEventListener('click', function (){
                             const add_order_product_url = 'http://127.0.0.1:8000/api/add-product/' + result[i].id + "/";
                             let headers = {
@@ -73,14 +119,13 @@
                             fetch(add_order_product_url, options).then(
                                 response => {
                                     if (response.ok){
-                                        alert(result[i].name + ' added to cart');
+                                        alert(result[i].name + ' успешно добавлен в корзину');
                                     }
                                 }
                             );
                         })
                         product_price.innerText = result[i].price;
                         product_div.appendChild(product_name);
-                        product_div.appendChild(book_img);
                         product_div.appendChild(product_price);
                         product_div.appendChild(order_product);
                         content_block.appendChild(product_div);

@@ -19,3 +19,8 @@ class Order(models.Model):
     product = models.ManyToManyField(to=Product)
     is_active = models.BooleanField(default=True)
 
+
+class Customer(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='customer')
+    role = models.CharField(default="CLIENT", max_length=50)
+

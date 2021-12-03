@@ -6,8 +6,9 @@ from .models import Product
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = (
-            'id', 'name', 'price', 'photo'
+        read_only_fields = ('description', )
+        fields = read_only_fields + (
+            'id', 'name', 'price',
         )
 
     def validate(self, attrs):
@@ -20,7 +21,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            'id', 'name', 'photo',  'price', 'description',
+            'id', 'name', 'price', 'description',
         )
 
 
@@ -37,7 +38,7 @@ class OrderSerializer(serializers.Serializer):
 
     class Meta:
         fields = (
-            'id', 'product', 'customer', 'photo'
+            'id', 'product', 'customer',
         )
 
 
