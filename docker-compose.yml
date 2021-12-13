@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  redis:
+    container_name: "redis_shop"
+    image: redis:alpine
+    ports:
+      - "6379:6379" # слева порт хоста(физ.машина), справа порт внутри контейнера
+    networks:
+      - common
+
+  django: # или могут назвать web
+    container_name: "django_shop"
+    build: . # находит докер для билда
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    networks:
+      - common
+
+  celery:
+    container_name: "celery_shop"
+    build: .
+    command: celery -A pcShop worker --loglevel=info
+    depends_on:
+      - redis
+    networks:
+      - common
+
+networks:
+    common:
+      name: common
+
+
+
+

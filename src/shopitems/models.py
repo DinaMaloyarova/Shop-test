@@ -7,7 +7,7 @@ class Product(models.Model):
     name = models.CharField(max_length=40)
     price = models.IntegerField()
     description = models.TextField(null=True, default='Добавь описание')
-    photo = models.ImageField(upload_to='images/', verbose_name='Photo', blank=True)
+    photo = models.FileField(verbose_name='Photo', blank=True)
     discount = models.FloatField(default=0.5)
     created = models.DateTimeField(auto_now=True)
 
