@@ -9,18 +9,18 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from .models import Product, Order
 from .serializers import ProductSerializer, OrderSerializer, EmailSerializer
-from .permissions import CustomerPermission, OrderCustomerPermission
+from .permissions import AdminPermission, ClientPermission
 from rest_framework.permissions import AllowAny
 
 
 class ProductViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, CustomerPermission)
+    permission_classes = (IsAuthenticated, ClientPermission)
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
 class OrderViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, OrderCustomerPermission)
+    permission_classes = (IsAuthenticated, ClientPermission)
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
@@ -47,7 +47,7 @@ class OrderView(APIView):
 
 
 class AddProductApiView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, AdminPermission )
 
     def get(self, request, pk):
         product = get_object_or_404(Product, id=pk)
@@ -73,6 +73,9 @@ def order_detail(request):
 
 def registration(request):
     return render(request, 'registration.html')
+
+def signup(request):
+    return render(request, 'sign up.html')
 
 
 class SendEmailApiView(GenericAPIView):

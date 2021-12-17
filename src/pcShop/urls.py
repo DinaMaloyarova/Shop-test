@@ -14,5 +14,5 @@ urlpatterns = [
     path('refresh/', TokenRefreshView.as_view()),
     path('send-email/', SendEmailApiView.as_view()),
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+urlpatterns += swagger_urlpatterns

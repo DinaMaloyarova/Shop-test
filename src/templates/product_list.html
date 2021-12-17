@@ -16,8 +16,9 @@
 
 </div>
  <script>
+        const base_url = window.location.host;
         function refresh_token(){
-            const refresh_url = "http://127.0.0.1:8000/refresh/";
+            const refresh_url = "http://" + base_url + "/refresh/";
             let refresh_token = localStorage.getItem('refresh');
              let headers = {
                 'Content-Type': 'application/json',
@@ -41,7 +42,7 @@
         let content_block = document.getElementById('content');
 
          function loadata(){
-            const url = 'http://127.0.0.1:8000/api/products/';
+            const url = 'http://'+ base_url + '/api/products/';
             let access = localStorage.getItem('access');
             let headers = {
                 'Content-Type': 'application/json',
@@ -64,14 +65,13 @@
                 }
                 })
                 .then(result => {
-                    console.log(result);
                     for (let i in result){
                         let product_div = document.createElement('div');
                         product_div.id = result[i].id;
                         product_div.style = "margin-bottom: 10px";
                         let product_name = document.createElement('a');
                         product_name.innerText = result[i].name;
-                        product_name.href = "http://127.0.0.1:8000/products/" + result[i].id + "/";
+                        product_name.href = "http://" + base_url + "/products/" + result[i].id + "/";
                         let book_img = document.createElement('img');
                         book_img.src = result[i].photo;
                         book_img.style = "height:100px";
@@ -79,7 +79,7 @@
                         let order_product = document.createElement('button');
                         order_product.innerText = 'Добавить в корзину'
                         order_product.addEventListener('click', function (){
-                            const add_order_product_url = 'http://127.0.0.1:8000/api/add-product/' + result[i].id + "/";
+                            const add_order_product_url = 'http://' + base_url + '/api/add-product/' + result[i].id + "/";
                             let token = localStorage.getItem('access')
                             let headers = {
                                 'Content-Type': 'application/json',

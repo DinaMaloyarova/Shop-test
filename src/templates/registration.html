@@ -25,6 +25,7 @@
 </div>
 
 <script>
+    const base_url = window.location.host;
     let submit_btn = document.getElementById('sbmt');
     function submit(){
         let username = document.getElementById('username');
@@ -59,7 +60,7 @@
         .then(res => {
             localStorage.setItem('access', res.access)
             localStorage.setItem('refresh', res.refresh)
-            document.location.href = "http://127.0.0.1:8000/products/";
+            document.location.href = "http://" + base_url + "/products/";
         })
     }
     submit_btn.addEventListener('click', submit);

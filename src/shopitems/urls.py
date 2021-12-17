@@ -11,7 +11,8 @@ from .views import (
     product_list,
     order_detail,
     product_detail,
-    registration
+    registration,
+    signup
 )
 
 router = DefaultRouter()
@@ -28,6 +29,7 @@ html_urlpatterns = [
     path('products/', product_list),
     path('products/<int:pk>/', product_detail),
     path('registration/', registration),
+    path('signup/', signup),
     path('order/', order_detail),
 ]
 
