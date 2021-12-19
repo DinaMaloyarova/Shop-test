@@ -25,7 +25,6 @@
 </div>
 
 <script>
-    const base_url = window.location.host;
     let submit_btn = document.getElementById('sbmt');
     function submit(){
         let username = document.getElementById('username');
@@ -34,6 +33,7 @@
             'username': username.value,
             'password': password.value
         };
+        const base_url = window.location.host;
         const url = "http://" + window.location.host + "/login/";
         fetch(url, {
             method: "POST",
@@ -60,6 +60,7 @@
         .then(res => {
             localStorage.setItem('access', res.access)
             localStorage.setItem('refresh', res.refresh)
+            const base_url = window.location.host;
             document.location.href = "http://" + base_url + "/products/";
         })
     }

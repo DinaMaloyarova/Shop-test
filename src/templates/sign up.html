@@ -42,6 +42,7 @@
             'password1': password1.value,
             'password2': password2.value,
         };
+        const base_url = window.location.host;
         const url = "http://" + window.location.host + "/signup/";
 
         if (password1.value === password2.value){
@@ -83,7 +84,7 @@
      .then(res => {
             localStorage.setItem('access', res.access)
             localStorage.setItem('refresh', res.refresh)
-            document.location.href = "http://127.0.0.1:8000/products/";
+            document.location.href = "http://" + base_url + "/products/";
         })
     }
     submit_btn.addEventListener('click', submit);

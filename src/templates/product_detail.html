@@ -8,7 +8,8 @@
 <body>
     <nav class="navbar navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="http://127.0.0.1:8000/">Books for Geeks</a>
+        <a class="navbar-brand" href="http://65.21.177.185:8000/">Books for Geeks</a>
+          <a href="http://65.21.177.185:8000/products/">Back to all books</a>
         <p>More about book</p>
       </div>
     </nav>
@@ -17,7 +18,8 @@
 <script>
 
         function refresh_token(){
-            const refresh_url = "http://127.0.0.1:8000/refresh/";
+            const base_url = window.location.host;
+            const refresh_url = "http://"+ base_url +"/refresh/";
             let refresh_token = localStorage.getItem('refresh');
              let headers = {
                 'Content-Type': 'application/json',
@@ -41,7 +43,8 @@
     let full_url = document.location.pathname;
     let url_array = full_url.split('/');
     let product_id = url_array[url_array.length-2];
-    const url = 'http://127.0.0.1:8000/api/products/' + product_id + '/';
+    const base_url = window.location.host;
+    const url = 'http://'+ base_url +'/api/products/' + product_id + '/';
 
     function get_product_detail(){
     let access = localStorage.getItem('access');
@@ -61,15 +64,15 @@
                 product_div.style = "margin-bottom: 10px";
                 let product_name = document.createElement('h3');
                 product_name.innerText = result.name;
-<!--                let book_img = document.createElement('img');-->
-<!--                book_img.src = result[i].image;-->
-<!--                book_img.style = "height:100px";-->
+                let book_img = document.createElement('img');
+                book_img.src = result[i].photo;
+                book_img.style = "height:100px";
                 let product_description = document.createElement('p');
                 product_description.innerText = result.description;
                 let product_price = document.createElement('h5');
                 product_price.innerText = result.price;
                 product_div.appendChild(product_name);
-<!--                product_div.appendChild(book_img);-->
+                product_div.appendChild(book_img);
                 product_div.appendChild(product_description);
                 product_div.appendChild(product_price);
                 content_block.appendChild(product_div);

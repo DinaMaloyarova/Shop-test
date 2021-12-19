@@ -24,9 +24,15 @@ class Order(models.Model):
 class Role(models.Model):
     name = models.CharField(choices=Roles.choices, max_length=10)
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f"{self.user}  {self.role}"
 
 

@@ -11,3 +11,4 @@ def send_email(email, message):
     print('Сообщение отправлено')
     end = datetime.now()
     print(f'Задача выполнена за {end-start}')
+

@@ -8,7 +8,8 @@
 <body>
     <nav class="navbar navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="http://127.0.0.1:8000/">Books for Geeks</a>
+        <a class="navbar-brand" href="http://65.21.177.185:8000/">Books for Geeks</a>
+        <a href="http://65.21.177.185:8000/order/">Cart</a>
       </div>
     </nav>
 
@@ -16,8 +17,8 @@
 
 </div>
  <script>
-        const base_url = window.location.host;
         function refresh_token(){
+            const base_url = window.location.host;
             const refresh_url = "http://" + base_url + "/refresh/";
             let refresh_token = localStorage.getItem('refresh');
              let headers = {
@@ -42,6 +43,7 @@
         let content_block = document.getElementById('content');
 
          function loadata(){
+            const base_url = window.location.host;
             const url = 'http://'+ base_url + '/api/products/';
             let access = localStorage.getItem('access');
             let headers = {
@@ -66,6 +68,7 @@
                 })
                 .then(result => {
                     for (let i in result){
+                        const base_url = window.location.host;
                         let product_div = document.createElement('div');
                         product_div.id = result[i].id;
                         product_div.style = "margin-bottom: 10px";
