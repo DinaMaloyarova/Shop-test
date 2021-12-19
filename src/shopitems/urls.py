@@ -4,8 +4,6 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ProductViewSet,
     OrderViewSet,
-    ProductView,
-    OrderView,
     AddProductApiView,
     homepage,
     product_list,

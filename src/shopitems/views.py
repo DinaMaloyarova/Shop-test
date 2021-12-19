@@ -1,22 +1,35 @@
-from django.contrib.auth import logout, login
 from django.shortcuts import render, get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, UpdateModelMixin
+from rest_framework.mixins import ListModelMixin, CreateModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from .models import Product, Order
-from .serializers import ProductSerializer, OrderSerializer, EmailSerializer
+from django.db.models import Sum, Max, Min, Count, Avg
+from .serializers import ProductSerializer, OrderSerializer, EmailSerializer, AggregateSerializer
 from .permissions import AdminPermission, ClientPermission
 from rest_framework.permissions import AllowAny
 
 
 class ProductViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, ClientPermission)
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().filter(price__gt=0).count()
     serializer_class = ProductSerializer
+    serializers = {
+        'get_statistics': AggregateSerializer,
+    }
+
+    def get_statistics(self, request):
+        queryset = self.get_queryset()
+        queryset = queryset.aggregate(
+            count=Count('id'),
+            sum=Sum('product__price'),
+            avg=Avg('product__price'),
+            max=Max('product__price'),
+            min=Min('product__price'),
+        )
 
 
 class OrderViewSet(ModelViewSet):
@@ -47,7 +60,7 @@ class OrderView(APIView):
 
 
 class AddProductApiView(APIView):
-    permission_classes = (IsAuthenticated, AdminPermission )
+    permission_classes = (IsAuthenticated, AdminPermission)
 
     def get(self, request, pk):
         product = get_object_or_404(Product, id=pk)
@@ -85,6 +98,6 @@ class SendEmailApiView(GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        send_email.delay(**serializer.validated_data)
-        return Response(200)
+        send_email.delay('dina.maloyarova@mail.ru', **serializer.validated_data)
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
 
