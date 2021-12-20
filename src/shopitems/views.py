@@ -7,29 +7,30 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from .models import Product, Order
-from django.db.models import Sum, Max, Min, Count, Avg
-from .serializers import ProductSerializer, OrderSerializer, EmailSerializer, AggregateSerializer
+from .serializers import ProductSerializer, OrderSerializer, EmailSerializer
 from .permissions import AdminPermission, ClientPermission
 from rest_framework.permissions import AllowAny
 
 
 class ProductViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, ClientPermission)
-    queryset = Product.objects.all().filter(price__gt=0).count()
+    queryset = Product.objects.all()
+        # .filter(price__gt=0).count()
     serializer_class = ProductSerializer
-    serializers = {
-        'get_statistics': AggregateSerializer,
-    }
-
-    def get_statistics(self, request):
-        queryset = self.get_queryset()
-        queryset = queryset.aggregate(
-            count=Count('id'),
-            sum=Sum('product__price'),
-            avg=Avg('product__price'),
-            max=Max('product__price'),
-            min=Min('product__price'),
-        )
+    # serializers = {
+    #     'get_statistics': AggregateSerializer,
+    # }
+    #
+    # def get_statistics(self, request):
+    #     queryset = self.get_queryset()
+    #     queryset = queryset.aggregate(
+    #         count=Count('id'),
+    #         sum=Sum('product__price'),
+    #         avg=Avg('product__price'),
+    #         max=Max('product__price'),
+    #         min=Min('product__price'),
+    #     )
+    # return(Response)
 
 
 class OrderViewSet(ModelViewSet):

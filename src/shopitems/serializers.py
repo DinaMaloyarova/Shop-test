@@ -42,12 +42,12 @@ class OrderSerializer(serializers.Serializer):
         )
 
 
-class AggregateSerializer(serializers.Serializer):
-    count = serializers.IntegerField()
-    sum = serializers.IntegerField()
-    avg = serializers.FloatField()
-    max = serializers.IntegerField()
-    min = serializers.IntegerField()
+# class AggregateSerializer(serializers.Serializer):
+#     count = serializers.IntegerField()
+#     sum = serializers.IntegerField()
+#     avg = serializers.FloatField()
+#     max = serializers.IntegerField()
+#     min = serializers.IntegerField()
 
 class EmailSerializer(serializers.Serializer):
     email = serializers.CharField()
