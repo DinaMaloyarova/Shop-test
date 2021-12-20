@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-y*#(6bu=9c!x_=kpxo-)ut4v$q7oo8&z^%2c-ng2n6r+yud!q)
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', '65.21.177.185']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', '127.0.0.1']
 
 
 INSTALLED_APPS = [
@@ -40,6 +40,17 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
+}
+
+SWAGGER_SETTINGS = {
+    "USE_SESSION_AUTH": False,
+    "SECURITY_DEFINITIONS": {
+        "api_key": {
+            "type": 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
 }
 
 #CELERY
