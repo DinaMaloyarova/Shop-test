@@ -32,7 +32,6 @@ html_urlpatterns = [
 ]
 
 
-
 urlpatterns = [
     path('', include(html_urlpatterns)),
     path('api/', include(urlpatterns)),

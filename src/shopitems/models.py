@@ -36,3 +36,5 @@ class Client(models.Model):
         return f"{self.user}  {self.role}"
 
 
+
+

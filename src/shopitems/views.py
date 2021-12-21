@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
@@ -6,36 +6,23 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from .models import Product, Order
+from .models import Product, Order, User
 from .serializers import ProductSerializer, OrderSerializer, EmailSerializer
 from .permissions import AdminPermission, ClientPermission
 from rest_framework.permissions import AllowAny
+from django.http import Http404
+from django.db.models import Sum
 
 
 class ProductViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, ClientPermission)
-    queryset = Product.objects.all()
-        # .filter(price__gt=0).count()
+    queryset = Product.objects.order_by('name')
     serializer_class = ProductSerializer
-    # serializers = {
-    #     'get_statistics': AggregateSerializer,
-    # }
-    #
-    # def get_statistics(self, request):
-    #     queryset = self.get_queryset()
-    #     queryset = queryset.aggregate(
-    #         count=Count('id'),
-    #         sum=Sum('product__price'),
-    #         avg=Avg('product__price'),
-    #         max=Max('product__price'),
-    #         min=Min('product__price'),
-    #     )
-    # return(Response)
 
 
 class OrderViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, ClientPermission)
-    queryset = Order.objects.all()
+    queryset = Order.objects.aggregate(Sum('price'))
     serializer_class = OrderSerializer
 
 
@@ -78,7 +65,7 @@ def product_list(request):
     return render(request, 'product_list.html')
 
 
-def product_detail(request, pk):
+def product_detail(request):
     return render(request, 'product_detail.html')
 
 
@@ -96,9 +83,13 @@ class SendEmailApiView(GenericAPIView):
     permission_classes = (AllowAny, )
     serializer_class = EmailSerializer
 
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        send_email.delay('dina.maloyarova@mail.ru', **serializer.validated_data)
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
+    def verify(request, uuid):
+        try:
+            user = User.objects.get(verification_uuid=uuid, is_verified=False)
+        except User.DoesNotExist:
+            raise Http404("User does not exist or is already verified")
 
+        user.is_verified = True
+        user.save()
+
+        return redirect('index.html')
