@@ -16,9 +16,6 @@
     </div>
 
 <script>
-<!--    host = document.getElementById('adress')-->
-<!--    host.href = window.location.host;-->
-
     function refresh_token(){
             const base_url = window.location.host;
             const refresh_url = "http://" + base_url + "/refresh/";
@@ -46,10 +43,10 @@
     let content_block = document.getElementById('content');
 
     function get_order_detail(){
-    let access = localStorage.getItem('access');
+<!--    let access = localStorage.getItem('access');-->
         let headers = {
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + access
+<!--              'Authorization': 'Bearer ' + access-->
           }
          let options = {
           method: 'GET',
