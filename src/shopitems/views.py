@@ -22,7 +22,8 @@ class ProductViewSet(ModelViewSet):
 
 class OrderViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, ClientPermission)
-    queryset = Order.objects.aggregate(Sum('price'))
+    queryset = Order.objects.all()
+    # query = Product.objects.aggregate(Sum('price'))
     serializer_class = OrderSerializer
 
 
