@@ -46,6 +46,7 @@
     let content_block = document.getElementById('content');
 
     function get_order_detail(){
+    let access = localStorage.getItem('access');
         let headers = {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer ' + access
