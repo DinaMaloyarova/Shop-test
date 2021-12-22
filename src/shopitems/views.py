@@ -11,19 +11,17 @@ from .serializers import ProductSerializer, OrderSerializer, EmailSerializer
 from .permissions import AdminPermission, ClientPermission
 from rest_framework.permissions import AllowAny
 from django.http import Http404
-from django.db.models import Sum
 
 
 class ProductViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, ClientPermission)
-    queryset = Product.objects.order_by('name')
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
 class OrderViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, ClientPermission)
     queryset = Order.objects.all()
-    # query = Product.objects.aggregate(Sum('price'))
     serializer_class = OrderSerializer
 
 

@@ -64,15 +64,11 @@
                 product_div.style = "margin-bottom: 10px";
                 let product_name = document.createElement('h3');
                 product_name.innerText = result.name;
-                let book_img = document.createElement('img');
-                book_img.src = result[i].photo;
-                book_img.style = "height:100px";
                 let product_description = document.createElement('p');
                 product_description.innerText = result.description;
                 let product_price = document.createElement('h5');
                 product_price.innerText = result.price;
                 product_div.appendChild(product_name);
-                product_div.appendChild(book_img);
                 product_div.appendChild(product_description);
                 product_div.appendChild(product_price);
                 content_block.appendChild(product_div);
